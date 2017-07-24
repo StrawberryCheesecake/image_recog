@@ -2,7 +2,9 @@ import tensorflow as tf
 # from tensorflow.python.platform import tf_logging as logging
 import image_preprocessing
 
+
 from nets import inception
+
 
 import os
 import time
@@ -12,13 +14,9 @@ slim = tf.contrib.slim
 # ============== Dataset Setup ============== #
 
 
-# State the directory where the tf record files are
-dataset_dir = "./images"
-
-# State the image size we're resizing our images to. Inception resnets default to 299
-image_size = inception.inception_v1.default_image_size
 
 # State the number of classes to predict
+
 num_classes = 2
 
 # State the lables file and read it
@@ -133,7 +131,8 @@ def get_split(split_name, dataset_dir, file_pattern=file_pattern):
     return dataset
 
 
-def load_batch(dataset, batch_size, height=image_size, width=image_size, is_training=True):
+
+def load_batch(dataset, batch_size, height, width, is_training=True):
 
     """
         Input:
@@ -158,16 +157,22 @@ def load_batch(dataset, batch_size, height=image_size, width=image_size, is_trai
     # Obtain our tensors from the dataprovider
     raw_image, label = data_provider.get(['image', 'label'])
 
+
     # Perform the correct preprocessing for the image
     # I'd insert my own preprocessing script here
+
+
     image = image_preprocessing.preprocess_image(raw_image, image_size, image_size)
 
     # The dude still reshapes the raw image and keeps a reference to it so we can look at it properly if we need to during training
     # A resounding "meh" from me
 
     # Batch up the image by enqueuing the tensors internally into a FIFO queue
+
+
     # eventually dequeue many individual elements in tf.train.batch
-    images, labels = tf.train.batch(
+    images, raw_image, labels = tf.train.batch(
+
         [image, label],
         batch_size = batch_size,
         num_threads = 4,
@@ -175,4 +180,4 @@ def load_batch(dataset, batch_size, height=image_size, width=image_size, is_trai
         allow_smaller_final_batch = True
     )
 
-    return images, labels
+    return images, raw_image, labels
