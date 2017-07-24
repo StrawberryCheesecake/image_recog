@@ -1,5 +1,5 @@
 import os
-import random 
+import random
 import tensorpack
 
 from six.moves import xrange  # pylint: disable=redefined-builtin
@@ -7,7 +7,7 @@ import tensorflow as tf
 
 sess = tf.InteractiveSession()
 
-# *** We gotta the mind comment below as we spin up our architecture. The Conv Net expects an input of certain size 
+# *** We gotta the mind comment below as we spin up our architecture. The Conv Net expects an input of certain size
 # our models and our batch sizes ***
 
 # # Process images of this size. Note that this differs from the original CIFAR
@@ -29,8 +29,8 @@ def read_data(filename_queue):
 # We don't care about the filename, so we ignore the first tuple
   _, image_file = image_reader.read(filename_queue)
 
-# Decode the jpeg images and set them to a universal size 
-# so we don't run into "out of bounds" issues down the road 
+# Decode the jpeg images and set them to a universal size
+# so we don't run into "out of bounds" issues down the road
   image_orig = tf.image.decode_jpeg(image_file, channels=3)
 
   image = tf.image.resize_images(image_orig, [224, 224])
@@ -48,15 +48,15 @@ def _gen_image_and_label_batch(image, label, batch_size, min_queue_examples, shu
       [image, label],
       batch_size = batch_size,
       num_threads = num_preprocess_threads,
-      capacity = min_queue_examples + 3 * batch_size, 
+      capacity = min_queue_examples + 3 * batch_size,
       min_after_dequeue = min_queue_examples)
   else:
     images, label_batch = tf.train.batch(
       [image, label],
-      batch_size = batch_size, 
-      num_threads = num_preprocess_threads, 
+      batch_size = batch_size,
+      num_threads = num_preprocess_threads,
       capacity = min_queue_examples + 3 * batch_size)
-  
+
   # For testing purposes
   tf.summary.image('images', images)
 
@@ -85,58 +85,58 @@ def distorted_inputs(batch_size):
   reshaped_image = tf.cast(read_input, tf.float32)
 
   # Dimensions of our tensors. Eventually we'd like to be able to dynamically resize our images
-  # as another form of data augmentation, but that'll have to wait until we figure out how this 
-  # plays into the model's architecture 
+  # as another form of data augmentation, but that'll have to wait until we figure out how this
+  # plays into the model's architecture
   height = IMAGE_SIZE
   width = IMAGE_SIZE
   random_dim = random.randint(256, 480)
 
   print("Reached data augmentation.")
- 
-  # Data augmentation- we apply several kinds of distortions
-  # some at a given probability, to create more permutations and variance in our data set 
 
-  # Randomly crop a [height, width] section of the image 
+  # Data augmentation- we apply several kinds of distortions
+  # some at a given probability, to create more permutations and variance in our data set
+
+  # Randomly crop a [height, width] section of the image
   distorted_image = tf.random_crop(reshaped_image, [height, width, 3])
 
- # Randomly flip the image horizontally 
+ # Randomly flip the image horizontally
   distorted_image = tf.image.random_flip_left_right(distorted_image)
 
- # Randomly brighten the image at a given probability 
+ # Randomly brighten the image at a given probability
   distorted_image = tf.image.random_brightness(distorted_image, 
                                               max_delta = 63) if random.random() >= 0.4 else distorted_image
 
-# Randomly saturate the photo's contrast 
+# Randomly saturate the photo's contrast
 
-# Ideally we'd do a PCA analysis of in all 3 of the images's pixel depths 
-# and adjust the contrast based on some kind of calculated offset.
+    # Ideally we'd do a PCA analysis of in all 3 of the images's pixel depths
+    # and adjust the contrast based on some kind of calculated offset.
 
-# This can be added in when we refactor for segmentation and object detection 
-  distorted_image = tf.image.random_contrast(distorted_image, 
+    # This can be added in when we refactor for segmentation and object detection
+  distorted_image = tf.image.random_contrast(distorted_image,
                                           lower = 0.2, upper = 1.8) if random.random() >= 0.4 else distorted_image
 
 
   print("Reached data pre-processing.")
 
 # Data Pre-processing- subtract off the mean and divide by the variance of the pixels
-# to center the data on the origin and then normalize it 
+# to center the data on the origin and then normalize it
   float_image = tf.image.per_image_standardization(distorted_image)
   label = [1]
 
-  # Set the shapes of the tensors 
+  # Set the shapes of the tensors
   float_image.set_shape([height, width, 3])
 
   # Ensure the random shuffling has good mixing properties
   min_fraction_of_examples_in_queue = 0.4
-  min_queue_examples = int(NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN * 
+  min_queue_examples = int(NUM_EXAMPLES_PER_EPOCH_FOR_TRAIN *
                         min_fraction_of_examples_in_queue)
 
   print ('Filling the queue with training images before passing them to the model.')
 
-  # Generate and return a batch 
-  return _gen_image_and_label_batch(float_image, label, 
-                                  min_queue_examples, batch_size, 
-                                  shuffle = True)                       
+  # Generate and return a batch
+  return _gen_image_and_label_batch(float_image, label,
+                                  min_queue_examples, batch_size,
+                                  shuffle = True)
 
 
 # Uncomment this to run the script
