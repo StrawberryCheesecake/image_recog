@@ -7,6 +7,7 @@ from nets import inception
 
 
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import time
 slim = tf.contrib.slim
 
@@ -124,7 +125,7 @@ def get_split(split_name, dataset_dir, file_pattern=file_pattern):
         num_readers = 4,
         num_samples = num_samples,
         num_classes = num_classes,
-        labels_to_name = labels_to_name,
+        labels_to_names = labels_to_name,
         items_to_descriptions = items_to_descriptions
     )
 
@@ -162,7 +163,12 @@ def load_batch(dataset, batch_size, height, width, is_training=True):
     # I'd insert my own preprocessing script here
 
 
-    image = image_preprocessing.preprocess_image(raw_image, image_size, image_size)
+    image = image_preprocessing.preprocess_image(raw_image, height, width)
+
+    # Preprocess the image for display purposes.
+    raw_image = tf.expand_dims(raw_image, 0)
+    raw_image = tf.image.resize_images(raw_image, [height, width])
+    raw_image = tf.squeeze(raw_image)
 
     # The dude still reshapes the raw image and keeps a reference to it so we can look at it properly if we need to during training
     # A resounding "meh" from me
@@ -172,8 +178,7 @@ def load_batch(dataset, batch_size, height, width, is_training=True):
 
     # eventually dequeue many individual elements in tf.train.batch
     images, raw_image, labels = tf.train.batch(
-
-        [image, label],
+        [image, raw_image, label],
         batch_size = batch_size,
         num_threads = 4,
         capacity = 4 * batch_size,
