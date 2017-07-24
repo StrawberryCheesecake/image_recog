@@ -22,6 +22,7 @@ def preprocess_image(image, height, width):
   """
 
   reshaped_image = tf.cast(image, tf.float32)
+  reshaped_image = tf.reshape(reshaped_image, [height, width, 3])
 
 
   print("Reached data augmentation.")
