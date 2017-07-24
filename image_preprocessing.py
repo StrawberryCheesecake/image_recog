@@ -9,16 +9,13 @@ def preprocess_image(image, height, width):
 
   """
   Pre-process an image tensor for training or evaluation
-
   Input:
     image: 3D Tensor [height, width, channels] contains the image
     height (int) : image expected width
     width (int) : image expected height
     is_training (boolean) : whether its for training or not, different preprocessing for evaluation
-
   Output:
     Also a 3D tensor that does shit and shit
-
   """
   image = tf.image.resize_images(image,[height,width])
   reshaped_image = tf.cast(image, tf.float32)

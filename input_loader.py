@@ -71,7 +71,6 @@ def get_split(split_name, dataset_dir, file_pattern=file_pattern):
         split_name (str) : 'train' or 'validation' for whichever split you want
         dataset_dir (str) : directory your TFRecords are located in
         file_pattern (str) : string that'll pattern match to the TFRecord filenames
-
     Outputs:
         dataset (Dataset) : a Dataset class object where we can read its different components for easy batch creation
     """
@@ -142,7 +141,6 @@ def load_batch(dataset, batch_size, height, width, is_training=True):
             height (int) : height of the image to resize to during preprocessing
             width (int) : width of the image to resize to during preprocessing
             is_training (bool) : determine whether to perform training or validation pre-processing
-
         Output:
             images (Tensor) : a Tensor of the shape [batch_size, height, width, channels] corresponding to one batch of images
             labels (Tensor) : a Tensor of the shape (batch_size,) that contains the corresponding labels to the images
