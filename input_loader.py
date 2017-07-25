@@ -2,9 +2,7 @@ import tensorflow as tf
 # from tensorflow.python.platform import tf_logging as logging
 import image_preprocessing
 
-
 from nets import inception
-
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
@@ -12,12 +10,12 @@ import time
 slim = tf.contrib.slim
 
 
+
 # ============== Dataset Setup ============== #
 
 
 
 # State the number of classes to predict
-
 num_classes = 2
 
 # State the lables file and read it
@@ -47,6 +45,7 @@ items_to_descriptions = {
 
 
 # ============== Training Info ============== #
+
 
 
 # State the number of epochs to train
@@ -158,22 +157,14 @@ def load_batch(dataset, batch_size, height, width, is_training=True):
 
 
     # Perform the correct preprocessing for the image
-    # I'd insert my own preprocessing script here
-
-
     image = image_preprocessing.preprocess_image(raw_image, height, width)
 
-    # Preprocess the image for display purposes.
+    # Preprocess the raw image for display purposes.
     raw_image = tf.expand_dims(raw_image, 0)
     raw_image = tf.image.resize_images(raw_image, [height, width])
     raw_image = tf.squeeze(raw_image)
 
-    # The dude still reshapes the raw image and keeps a reference to it so we can look at it properly if we need to during training
-    # A resounding "meh" from me
-
     # Batch up the image by enqueuing the tensors internally into a FIFO queue
-
-
     # eventually dequeue many individual elements in tf.train.batch
     images, raw_image, labels = tf.train.batch(
         [image, raw_image, label],
