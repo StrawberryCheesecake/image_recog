@@ -17,6 +17,8 @@ def preprocess_image(image, height, width):
   Output:
     Also a 3D tensor that does shit and shit
   """
+
+  # resize + reshape the image to suit the CNN architecture 
   image = tf.image.resize_images(image,[height,width])
   reshaped_image = tf.cast(image, tf.float32)
   reshaped_image = tf.reshape(reshaped_image, [height, width, 3])
@@ -24,8 +26,7 @@ def preprocess_image(image, height, width):
 
   print("Reached data augmentation.")
 
-  # Data augmentation- we apply several kinds of distortions
-  # some at a given probability, to create more permutations and variance in our data set
+  # Data augmentation- we apply several kinds of distortions, some at a given probability, to create more variance in our data set
 
   # Randomly crop a [height, width] section of the image
   distorted_image = tf.random_crop(reshaped_image, [height, width, 3])
