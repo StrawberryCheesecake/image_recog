@@ -10,8 +10,8 @@ def main():
         url_file = sys.argv[2]
     else:
         sys.exit("Not enough arguments provided.")
-    # dli.run(class_name,url_file)
-    # os.remove("./images/labels.txt")
+    dli.run(class_name,url_file)
+    os.remove("./images/labels.txt")
     for filename in glob.glob("./images/0x17*"):
         os.remove(filename)
 
