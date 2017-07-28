@@ -31,7 +31,7 @@ for line in labels:
 
 
 # create the file pattern for each tf record
-file_pattern = 'seatbelt_%s_*.tfrecord'
+file_pattern = '0x17_%s_*.tfrecord'
 
 # Dictionary to keep track of variables, for dataset comprehention
 items_to_descriptions = {
@@ -85,7 +85,7 @@ def get_split(split_name, dataset_dir, file_pattern=file_pattern):
     # Count the total number of examples in all of these shards
     # We can hardcode this step if we just 'know' the format of our TFRecord files
     num_samples = 0
-    file_pattern_for_counting = 'seatbelt_' + split_name
+    file_pattern_for_counting = '0x17_' + split_name
     tfrecords_to_count = [os.path.join(dataset_dir, file) for file in os.listdir(dataset_dir)\
                                                             if file.startswith(file_pattern_for_counting)]
 
